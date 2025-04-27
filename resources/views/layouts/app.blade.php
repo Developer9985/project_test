@@ -7,6 +7,9 @@
 
     <title>{{ config('app.name', 'Startup Ecosystem Tracker') }}</title>
 
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -82,23 +85,49 @@
                         </button>
 
                         <!-- Profile dropdown -->
-                        <div class="ml-3 relative">
+                        <div class="ml-3 relative" x-data="{ open: false }" @click.away="open = false">
                             <div>
-                                <button type="button" class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                                    <span class="sr-only">Open user menu</span>
-                                    <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                                </button>
+                                <div class="flex items-center">
+                                    <span class="text-white text-sm mr-3">{{ auth()->user()->name }}</span>
+                                    <button type="button" 
+                                            @click="open = !open"
+                                            class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" 
+                                            id="user-menu-button" 
+                                            aria-expanded="false" 
+                                            aria-haspopup="true">
+                                        <span class="sr-only">Open user menu</span>
+                                        <img class="h-8 w-8 rounded-full" 
+                                             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                                             alt="">
+                                    </button>
+                                </div>
                             </div>
                             
-                            <!-- Logout Button -->
-                            @auth
-                            <form method="POST" action="{{ route('logout') }}" class="inline-block ml-3">
-                                @csrf
-                                <button type="submit" class="px-3 py-1 text-xs rounded-full bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-red-500">
-                                    Logout
-                                </button>
-                            </form>
-                            @endauth
+                            <!-- Dropdown menu -->
+                            <div x-show="open"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                 x-transition:leave-end="transform opacity-0 scale-95"
+                                 class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none" 
+                                 role="menu" 
+                                 aria-orientation="vertical" 
+                                 aria-labelledby="user-menu-button" 
+                                 tabindex="-1">
+                                @auth
+                                <form method="POST" action="{{ route('logout') }}" class="block w-full">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="block w-full px-4 py-2 text-sm text-white hover:bg-red-600 transition-colors duration-150" 
+                                            role="menuitem" 
+                                            tabindex="-1">
+                                        Logout
+                                    </button>
+                                </form>
+                                @endauth
+                            </div>
                         </div>
                     </div>
                 </div>
